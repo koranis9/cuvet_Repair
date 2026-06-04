@@ -2,7 +2,7 @@
   "name": "ระบบแจ้งซ่อม คณะสัตวแพทยศาสตร์ จุฬาฯ",
   "short_name": "แจ้งซ่อม",
   "description": "ระบบแจ้งซ่อม กลุ่มภารกิจกายภาพฯ",
-  "start_url": "/",
+  "start_url": "/cuvet_Repair/",
   "display": "standalone",
   "background_color": "#1565C0",
   "theme_color": "#1565C0",
