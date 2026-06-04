@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="theme-color" content="#1565C0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="แจ้งซ่อม">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>ระบบแจ้งซ่อม</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  body{font-family:'Sarabun',sans-serif;background:#F5F5F5;color:#212121;min-height:100vh}
+  :root{--primary:#1565C0;--primary-dark:#0D47A1;--primary-light:#E3F2FD;--accent:#FF9800;--success:#4CAF50;--danger:#F44336;--white:#fff;--gray:#9E9E9E;--border:#E0E0E0}
+
+  /* ── Layout ── */
+  .screen{display:none;min-height:100vh}
+  .screen.active{display:block}
+
+  /* ── Login ── */
+  #loginScreen{background:var(--primary);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px;min-height:100vh}
+  #loginScreen.active{display:flex}
+  .login-logo{width:140px;height:140px;margin-bottom:16px;border-radius:24px}
+  .login-title{color:white;font-size:24px;font-weight:700;margin-bottom:4px}
+  .login-sub{color:rgba(255,255,255,0.8);font-size:13px;margin-bottom:32px;text-align:center}
+  .login-card{background:white;border-radius:20px;padding:24px;width:100%;max-width:380px}
+  .login-card h2{font-size:16px;margin-bottom:16px;color:#212121}
+
+  /* ── App Shell ── */
+  #appScreen{background:#F5F5F5;padding-bottom:64px}
+  #appScreen.active{display:block}
+  .topbar{background:var(--primary);color:white;padding:14px 16px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:100}
+  .topbar-title{font-size:16px;font-weight:700;flex:1}
+  .topbar-avatar{width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,0.25);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;cursor:pointer}
+  .bottomnav{position:fixed;bottom:0;left:0;right:0;background:white;border-top:0.5px solid var(--border);display:flex;z-index:100}
+  .bnav-item{flex:1;display:flex;flex-direction:column;align-items:center;padding:8px 0;cursor:pointer;color:var(--gray);font-size:10px;gap:3px;transition:color 0.2s}
+  .bnav-item.active{color:var(--primary)}
+  .bnav-icon{font-size:22px}
+
+  /* ── Pages ── */
+  .page{display:none;padding:16px}
+  .page.active{display:block}
+
+  /* ── Home ── */
+  .home-header{background:var(--primary);margin:-16px -16px 16px;padding:20px 16px 24px;color:white}
+  .home-greeting{font-size:14px;opacity:0.85}
+  .home-name{font-size:20px;font-weight:700;margin-top:2px}
+  .home-dept{font-size:12px;opacity:0.75;margin-top:2px}
+  .stat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:16px}
+  .stat-card{background:white;border-radius:12px;padding:14px;text-align:center;border:0.5px solid var(--border)}
+  .stat-num{font-size:28px;font-weight:700;color:var(--primary)}
+  .stat-label{font-size:11px;color:var(--gray);margin-top:2px}
+  .stat-card.orange .stat-num{color:#FF9800}
+  .stat-card.blue .stat-num{color:#2196F3}
+  .stat-card.green .stat-num{color:#4CAF50}
+  .quick-btns{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+  .quick-btn{background:white;border-radius:12px;padding:16px;display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer;border:0.5px solid var(--border);transition:background 0.15s}
+  .quick-btn:active{background:#F5F5F5}
+  .quick-btn-icon{font-size:28px}
+  .quick-btn-label{font-size:13px;font-weight:600;color:#424242}
+
+  /* ── Form ── */
+  .form-group{margin-bottom:14px}
+  .form-label{font-size:13px;color:#616161;margin-bottom:6px;display:block;font-weight:500}
+  .form-label .req{color:var(--danger)}
+  input,select,textarea{width:100%;padding:11px 14px;border:1px solid var(--border);border-radius:10px;font-size:14px;font-family:inherit;background:white;color:#212121;outline:none;-webkit-appearance:none}
+  input:focus,select:focus,textarea:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(21,101,192,0.1)}
+  textarea{min-height:80px;resize:vertical}
+  select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23757575' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center}
+  .form-section{background:white;border-radius:12px;padding:16px;margin-bottom:14px;border:0.5px solid var(--border)}
+  .form-section-title{font-size:13px;font-weight:700;color:var(--primary);margin-bottom:12px}
+  .img-preview{width:100%;max-height:180px;object-fit:cover;border-radius:8px;display:none;margin-top:8px}
+  .img-preview.show{display:block}
+
+  /* ── History ── */
+  .repair-card{background:white;border-radius:12px;margin-bottom:10px;border:0.5px solid var(--border);overflow:hidden;cursor:pointer;transition:transform 0.1s}
+  .repair-card:active{transform:scale(0.99)}
+  .repair-card-bar{height:4px}
+  .repair-card-body{padding:14px}
+  .repair-card-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+  .repair-id{font-size:11px;color:var(--gray)}
+  .status-chip{padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700;color:white}
+  .chip-orange{background:#FF9800}
+  .chip-blue{background:#2196F3}
+  .chip-green{background:#4CAF50}
+  .chip-gray{background:#9E9E9E}
+  .repair-building{font-size:15px;font-weight:700;color:#212121;margin-bottom:2px}
+  .repair-loc{font-size:12px;color:#757575;margin-bottom:8px}
+  .repair-cat{display:inline-block;background:#E3F2FD;color:#1565C0;font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;margin-bottom:8px}
+  .repair-desc{font-size:13px;color:#424242;margin-bottom:10px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .repair-footer{display:flex;justify-content:space-between;align-items:center}
+  .repair-reporter{font-size:12px;color:#757575}
+  .repair-date{font-size:11px;color:#9E9E9E}
+  .done-btn{width:100%;padding:10px;background:transparent;border:1.5px solid #4CAF50;border-radius:10px;color:#4CAF50;font-size:13px;font-weight:600;font-family:inherit;cursor:pointer;margin-top:10px}
+
+  /* ── Modal ── */
+  .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:200;display:none;align-items:flex-end;padding:0}
+  .modal-overlay.show{display:flex}
+  .modal{background:white;border-radius:20px 20px 0 0;width:100%;max-height:90vh;overflow-y:auto;padding:20px}
+  .modal-handle{width:40px;height:4px;background:#E0E0E0;border-radius:2px;margin:0 auto 16px}
+  .modal-title{font-size:17px;font-weight:700;margin-bottom:16px;color:#212121}
+  .detail-row{display:flex;gap:8px;margin-bottom:8px;font-size:13px}
+  .detail-key{color:#757575;min-width:90px;flex-shrink:0}
+  .detail-val{color:#212121;flex:1}
+  .detail-section{margin-bottom:14px;padding-bottom:14px;border-bottom:0.5px solid var(--border)}
+  .detail-section:last-child{border-bottom:none}
+  .detail-section-title{font-size:12px;font-weight:700;color:var(--primary);margin-bottom:8px}
+  .modal-img{width:100%;border-radius:8px;margin-top:4px}
+
+  /* ── Buttons ── */
+  .btn{width:100%;padding:14px;border:none;border-radius:12px;font-size:15px;font-weight:700;font-family:inherit;cursor:pointer;transition:opacity 0.2s}
+  .btn:active{opacity:0.85}
+  .btn-primary{background:var(--primary);color:white}
+  .btn-outline{background:transparent;border:1.5px solid var(--border);color:#424242}
+  .btn-sm{padding:10px;font-size:13px;border-radius:10px}
+  .btn-danger{background:var(--danger);color:white}
+
+  /* ── Toast ── */
+  .toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#323232;color:white;padding:12px 20px;border-radius:10px;font-size:13px;z-index:300;opacity:0;transition:opacity 0.3s;pointer-events:none;white-space:nowrap}
+  .toast.show{opacity:1}
+
+  /* ── Misc ── */
+  .spinner{border:3px solid rgba(255,255,255,0.3);border-top-color:white;border-radius:50%;width:18px;height:18px;animation:spin 0.8s linear infinite;display:inline-block;margin-right:8px;vertical-align:middle}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .empty-state{text-align:center;padding:48px 16px;color:var(--gray)}
+  .empty-icon{font-size:48px;margin-bottom:12px}
+  .section-title{font-size:14px;font-weight:700;color:#424242;margin-bottom:12px}
+  .loading-overlay{position:fixed;inset:0;background:rgba(255,255,255,0.8);z-index:150;display:none;align-items:center;justify-content:center;flex-direction:column;gap:12px}
+  .loading-overlay.show{display:flex}
+  .loading-spinner{width:40px;height:40px;border:4px solid var(--primary-light);border-top-color:var(--primary);border-radius:50%;animation:spin 0.8s linear infinite}
+</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<!-- Loading -->
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="loading-spinner"></div>
+  <p id="loadingText" style="font-size:14px;color:#616161">กำลังโหลด...</p>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- ═══════════════════ LOGIN ═══════════════════ -->
+<div id="loginScreen" class="screen active">
+  <img src="icon-192.png" class="login-logo" alt="logo" onerror="this.style.display='none'">
+  <div class="login-title">ระบบแจ้งซ่อม</div>
+  <div class="login-sub">คณะสัตวแพทยศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย</div>
+  <div class="login-card">
+    <h2>เข้าสู่ระบบ</h2>
+    <div class="form-group">
+      <input type="text" id="loginUser" placeholder="Username" autocomplete="username">
+    </div>
+    <div class="form-group">
+      <input type="password" id="loginPass" placeholder="Password" autocomplete="current-password">
+    </div>
+    <button class="btn btn-primary" id="loginBtn" onclick="doLogin()">เข้าสู่ระบบ</button>
+    <div style="text-align:center;margin-top:14px;font-size:13px;color:var(--gray)">ยังไม่มีบัญชี?</div>
+    <button class="btn btn-outline" style="margin-top:8px" onclick="showScreen('registerScreen')">สมัครสมาชิก</button>
+  </div>
+</div>
+
+<!-- ═══════════════════ REGISTER ═══════════════════ -->
+<div id="registerScreen" class="screen" style="background:white;min-height:100vh;padding:0">
+  <div class="topbar">
+    <span onclick="showScreen('loginScreen')" style="cursor:pointer;font-size:20px">←</span>
+    <span class="topbar-title">สมัครสมาชิก</span>
+  </div>
+  <div style="padding:16px">
+    <div class="form-group"><label class="form-label">ชื่อ-นามสกุล <span class="req">*</span></label>
+      <input type="text" id="regName" placeholder="กรอกชื่อ-นามสกุล"></div>
+    <div class="form-group"><label class="form-label">Username <span class="req">*</span></label>
+      <input type="text" id="regUser" placeholder="ตัวอักษร 4+ ตัว"></div>
+    <div class="form-group"><label class="form-label">Password <span class="req">*</span></label>
+      <input type="password" id="regPass" placeholder="รหัสผ่าน 6+ ตัว"></div>
+    <div class="form-group"><label class="form-label">ยืนยัน Password <span class="req">*</span></label>
+      <input type="password" id="regPass2" placeholder="ยืนยันรหัสผ่าน"></div>
+    <div class="form-group"><label class="form-label">Email</label>
+      <input type="email" id="regEmail" placeholder="example@email.com"></div>
+    <div class="form-group"><label class="form-label">หน่วยงาน <span class="req">*</span></label>
+      <input type="text" id="regDept" placeholder="ภาควิชา/หน่วยงาน"></div>
+    <div class="form-group"><label class="form-label">เบอร์โทรศัพท์ <span class="req">*</span></label>
+      <input type="tel" id="regPhone" placeholder="08X-XXXXXXX"></div>
+    <div class="form-group"><label class="form-label">หัวหน้าภาควิชา</label>
+      <input type="text" id="regSupervisor" placeholder="ชื่อหัวหน้า"></div>
+    <button class="btn btn-primary" onclick="doRegister()">สมัครสมาชิก</button>
+  </div>
+</div>
+
+<!-- ═══════════════════ APP ═══════════════════ -->
+<div id="appScreen" class="screen">
+  <div class="topbar">
+    <span class="topbar-title" id="topbarTitle">ระบบแจ้งซ่อม</span>
+    <div class="topbar-avatar" id="avatarBtn" onclick="showLogoutMenu()">?</div>
+  </div>
+
+  <!-- Home -->
+  <div id="pageHome" class="page active">
+    <div class="home-header">
+      <div class="home-greeting">สวัสดี 👋</div>
+      <div class="home-name" id="homeName">ผู้ใช้งาน</div>
+      <div class="home-dept" id="homeDept"></div>
+    </div>
+    <div class="section-title">สรุปการแจ้งซ่อม</div>
+    <div class="stat-grid">
+      <div class="stat-card orange"><div class="stat-num" id="statWait">0</div><div class="stat-label">รอดำเนินการ</div></div>
+      <div class="stat-card blue"><div class="stat-num" id="statProgress">0</div><div class="stat-label">กำลังดำเนินการ</div></div>
+      <div class="stat-card green"><div class="stat-num" id="statDone">0</div><div class="stat-label">เสร็จสิ้น</div></div>
+      <div class="stat-card"><div class="stat-num" id="statTotal">0</div><div class="stat-label">ทั้งหมด</div></div>
+    </div>
+    <div class="section-title">เมนูหลัก</div>
+    <div class="quick-btns">
+      <div class="quick-btn" onclick="goPage('report')">
+        <div class="quick-btn-icon">🔧</div>
+        <div class="quick-btn-label">แจ้งซ่อม</div>
+      </div>
+      <div class="quick-btn" onclick="goPage('history')">
+        <div class="quick-btn-icon">📋</div>
+        <div class="quick-btn-label">ประวัติ</div>
+      </div>
+      <div class="quick-btn" onclick="showEditProfile()">
+        <div class="quick-btn-icon">👤</div>
+        <div class="quick-btn-label">ข้อมูลส่วนตัว</div>
+      </div>
+      <div class="quick-btn" onclick="loadRepairs();goPage('history')">
+        <div class="quick-btn-icon">🔄</div>
+        <div class="quick-btn-label">รีเฟรช</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Report -->
+  <div id="pageReport" class="page">
+    <div class="section-title">แจ้งซ่อม</div>
+    <div class="form-section">
+      <div class="form-section-title">ข้อมูลผู้แจ้ง</div>
+      <div class="form-group"><label class="form-label">ชื่อผู้แจ้ง <span class="req">*</span></label>
+        <input type="text" id="rName"></div>
+      <div class="form-group"><label class="form-label">เบอร์ติดต่อ <span class="req">*</span></label>
+        <input type="tel" id="rPhone"></div>
+      <div class="form-group"><label class="form-label">หัวหน้าภาควิชา</label>
+        <input type="text" id="rSupervisor"></div>
+    </div>
+    <div class="form-section">
+      <div class="form-section-title">สถานที่</div>
+      <div class="form-group"><label class="form-label">อาคาร <span class="req">*</span></label>
+        <select id="rBuilding">
+          <option value="">-- เลือกอาคาร --</option>
+          <option>อาคาร 60 ปีสัตวแพทยศาสตร์</option>
+          <option>อาคาร 50 ปีสัตวแพทยศาสตร์</option>
+          <option>อาคารชัยอัศวรักษ์</option>
+          <option>อาคารสัตววิทยวิจักษ์ (ตึก รพ.สัตว์เล็ก)</option>
+          <option>อาคารสัตว์ป่วยฉุกเฉิน</option>
+        </select></div>
+      <div class="form-group"><label class="form-label">ห้อง/ชั้น/สถานที่ <span class="req">*</span></label>
+        <input type="text" id="rLocation" placeholder="เช่น ชั้น 3 ห้อง 309"></div>
+    </div>
+    <div class="form-section">
+      <div class="form-section-title">รายละเอียดการแจ้งซ่อม</div>
+      <div class="form-group"><label class="form-label">รายการ <span class="req">*</span></label>
+        <select id="rCategory">
+          <option value="">-- เลือกรายการ --</option>
+          <option>ระบบไฟฟ้าและแสงสว่าง</option>
+          <option>ระบบปรับอากาศ</option>
+          <option>ระบบสุขาภิบาล</option>
+          <option>ระบบอิเล็กทรอนิกส์</option>
+          <option>เกี่ยวกับอาคาร</option>
+          <option>ความสะอาด</option>
+          <option>อื่นๆ</option>
+        </select></div>
+      <div class="form-group"><label class="form-label">รายละเอียด <span class="req">*</span></label>
+        <textarea id="rDescription" placeholder="อธิบายปัญหาที่พบ"></textarea></div>
+    </div>
+    <div class="form-section">
+      <div class="form-section-title">แนบรูปภาพ</div>
+      <input type="file" id="rImage" accept="image/*" onchange="previewImage(this)" style="font-size:13px">
+      <img id="imgPreview" class="img-preview" alt="preview">
+    </div>
+    <button class="btn btn-primary" id="submitBtn" onclick="doSubmit()">ส่งการแจ้งซ่อม</button>
+    <div style="height:8px"></div>
+  </div>
+
+  <!-- History -->
+  <div id="pageHistory" class="page">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+      <div class="section-title" style="margin:0">ประวัติการแจ้งซ่อม</div>
+      <button class="btn btn-outline btn-sm" style="width:auto;padding:8px 14px" onclick="loadRepairs()">🔄</button>
+    </div>
+    <div id="repairList"></div>
+  </div>
+</div>
+
+<!-- ═══════════════════ BOTTOM NAV ═══════════════════ -->
+<div class="bottomnav" id="bottomNav" style="display:none">
+  <div class="bnav-item active" id="bn-home" onclick="goPage('home')">
+    <div class="bnav-icon">🏠</div><div>หน้าหลัก</div>
+  </div>
+  <div class="bnav-item" id="bn-report" onclick="goPage('report')">
+    <div class="bnav-icon">🔧</div><div>แจ้งซ่อม</div>
+  </div>
+  <div class="bnav-item" id="bn-history" onclick="goPage('history')">
+    <div class="bnav-icon">📋</div><div>ประวัติ</div>
+  </div>
+</div>
+
+<!-- ═══════════════════ MODALS ═══════════════════ -->
+<!-- Detail Modal -->
+<div class="modal-overlay" id="detailModal" onclick="closeModal('detailModal')">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-handle"></div>
+    <div class="modal-title">รายละเอียดการแจ้งซ่อม</div>
+    <div id="detailContent"></div>
+    <button class="btn btn-outline" onclick="closeModal('detailModal')" style="margin-top:8px">ปิด</button>
+  </div>
+</div>
+
+<!-- Logout Menu -->
+<div class="modal-overlay" id="logoutModal" onclick="closeModal('logoutModal')">
+  <div class="modal" onclick="event.stopPropagation()" style="padding-bottom:32px">
+    <div class="modal-handle"></div>
+    <div id="profileInfo" style="margin-bottom:16px;padding-bottom:16px;border-bottom:0.5px solid var(--border)"></div>
+    <button class="btn btn-outline" onclick="showEditProfile();closeModal('logoutModal')" style="margin-bottom:10px">✏️ แก้ไขข้อมูลส่วนตัว</button>
+    <button class="btn btn-danger" onclick="doLogout()">ออกจากระบบ</button>
+  </div>
+</div>
+
+<!-- Edit Profile Modal -->
+<div class="modal-overlay" id="editModal" onclick="closeModal('editModal')">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-handle"></div>
+    <div class="modal-title">แก้ไขข้อมูลส่วนตัว</div>
+    <div class="form-group"><label class="form-label">ชื่อ-นามสกุล</label>
+      <input type="text" id="editName"></div>
+    <div class="form-group"><label class="form-label">Email</label>
+      <input type="email" id="editEmail"></div>
+    <div class="form-group"><label class="form-label">หน่วยงาน</label>
+      <input type="text" id="editDept"></div>
+    <div class="form-group"><label class="form-label">เบอร์โทรศัพท์</label>
+      <input type="tel" id="editPhone"></div>
+    <div class="form-group"><label class="form-label">หัวหน้าภาควิชา</label>
+      <input type="text" id="editSupervisor"></div>
+    <div class="form-group"><label class="form-label">รหัสผ่านใหม่ (ถ้าต้องการเปลี่ยน)</label>
+      <input type="password" id="editNewPass" placeholder="เว้นว่างถ้าไม่เปลี่ยน"></div>
+    <button class="btn btn-primary" onclick="doUpdateProfile()" style="margin-bottom:8px">บันทึก</button>
+    <button class="btn btn-outline" onclick="closeModal('editModal')">ยกเลิก</button>
+  </div>
+</div>
+
+<script>
+// ════════════════════════════════════════════
+//  CONFIG — ใส่ Script URL ของคุณที่นี่
+// ════════════════════════════════════════════
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxdMCGBHaLn-N7XSrm0h_xswOwALjlBmyi6syH6847N5PhGXk_7HC2Mjb27T9Tb8766/exec/';
+
+// ════════════════════════════════════════════
+//  State
+// ════════════════════════════════════════════
+let currentUser = null;
+let repairs     = [];
+
+// ════════════════════════════════════════════
+//  Init
+// ════════════════════════════════════════════
+window.addEventListener('load', () => {
+  if ('serviceWorker' in navigator)
+    navigator.serviceWorker.register('sw.js');
+  const saved = localStorage.getItem('repairUser');
+  if (saved) {
+    currentUser = JSON.parse(saved);
+    enterApp();
+  }
+});
+
+// ════════════════════════════════════════════
+//  API
+// ════════════════════════════════════════════
+async function api(payload) {
+  const res = await fetch(SCRIPT_URL, {
+    method: 'POST',
+    body: JSON.stringify(payload)
+  });
+  return res.json();
+}
+
+// ════════════════════════════════════════════
+//  Auth
+// ════════════════════════════════════════════
+async function doLogin() {
+  const u = v('loginUser'), p = v('loginPass');
+  if (!u || !p) return toast('กรุณากรอก Username และ Password');
+  showLoading('กำลังเข้าสู่ระบบ...');
+  try {
+    const r = await api({ action:'login', username:u, password:p });
+    if (r.success) {
+      currentUser = r.user;
+      localStorage.setItem('repairUser', JSON.stringify(currentUser));
+      enterApp();
+    } else {
+      toast(r.message || 'เข้าสู่ระบบไม่สำเร็จ');
+    }
+  } catch(e) { toast('เชื่อมต่อไม่ได้ กรุณาตรวจสอบ URL'); }
+  hideLoading();
+}
+
+async function doRegister() {
+  const name  = v('regName'),  user = v('regUser'),
+        pass  = v('regPass'),  pass2= v('regPass2'),
+        email = v('regEmail'), dept = v('regDept'),
+        phone = v('regPhone'), sup  = v('regSupervisor');
+  if (!name||!user||!pass||!dept||!phone) return toast('กรุณากรอกข้อมูลที่จำเป็น');
+  if (user.length < 4) return toast('Username ต้องมีอย่างน้อย 4 ตัว');
+  if (pass.length < 6) return toast('Password ต้องมีอย่างน้อย 6 ตัว');
+  if (pass !== pass2)  return toast('Password ไม่ตรงกัน');
+  showLoading('กำลังสมัครสมาชิก...');
+  try {
+    const r = await api({ action:'register', reporter_name:name, username:user,
+      password:pass, email, location:dept, phone, supervisor:sup });
+    if (r.success) { toast('สมัครสมาชิกสำเร็จ! กรุณา Login'); showScreen('loginScreen'); }
+    else toast(r.message || 'สมัครไม่สำเร็จ');
+  } catch(e) { toast('เชื่อมต่อไม่ได้'); }
+  hideLoading();
+}
+
+function doLogout() {
+  localStorage.removeItem('repairUser');
+  currentUser = null; repairs = [];
+  closeModal('logoutModal');
+  showScreen('loginScreen');
+  set('loginUser',''); set('loginPass','');
+}
+
+// ════════════════════════════════════════════
+//  App
+// ════════════════════════════════════════════
+function enterApp() {
+  showScreen('appScreen');
+  document.getElementById('bottomNav').style.display = 'flex';
+  const u = currentUser;
+  set('homeName',  u.fullname || u.username);
+  set('homeDept',  u.department || '');
+  document.getElementById('avatarBtn').textContent =
+    (u.fullname || u.username || '?')[0].toUpperCase();
+  prefillReport();
+  loadRepairs();
+}
+
+function prefillReport() {
+  const u = currentUser;
+  set('rName',       u.fullname   || '');
+  set('rPhone',      u.phone      || '');
+  set('rSupervisor', u.supervisor || '');
+}
+
+// ════════════════════════════════════════════
+//  Submit Repair
+// ════════════════════════════════════════════
+async function doSubmit() {
+  const name = v('rName'), phone = v('rPhone'), building = v('rBuilding'),
+        loc  = v('rLocation'), cat = v('rCategory'), desc = v('rDescription');
+  if (!name)     return toast('กรุณากรอกชื่อผู้แจ้ง');
+  if (!phone)    return toast('กรุณากรอกเบอร์ติดต่อ');
+  if (!building) return toast('กรุณาเลือกอาคาร');
+  if (!loc)      return toast('กรุณาระบุสถานที่');
+  if (!cat)      return toast('กรุณาเลือกรายการ');
+  if (!desc)     return toast('กรุณากรอกรายละเอียด');
+
+  showLoading('กำลังส่งการแจ้งซ่อม...');
+  let imageBase64 = null;
+  const imgFile = document.getElementById('rImage').files[0];
+  if (imgFile) {
+    imageBase64 = await toBase64(imgFile);
+    document.getElementById('loadingText').textContent = 'กำลังอัพโหลดรูป...';
+  }
+
+  try {
+    const r = await api({
+      action: 'submitRepair',
+      reporter_name: name,
+      phone, email: currentUser.email || '',
+      supervisor: v('rSupervisor'),
+      department: currentUser.department || '',
+      building, location: loc, category: cat,
+      description: desc,
+      image_url: imageBase64
+    });
+    if (r.success) {
+      showConfirm('✅ แจ้งซ่อมสำเร็จ!', `รหัส: ${r.repair_id}\n\nระบบจะส่ง Email และแจ้งเตือน LINE ทันที`, () => {
+        clearReport(); loadRepairs(); goPage('history');
+      });
+    } else toast(r.message || 'แจ้งซ่อมไม่สำเร็จ');
+  } catch(e) { toast('เชื่อมต่อไม่ได้'); }
+  hideLoading();
+}
+
+function clearReport() {
+  ['rBuilding','rLocation','rCategory','rDescription'].forEach(id => set(id,''));
+  document.getElementById('rImage').value = '';
+  document.getElementById('imgPreview').classList.remove('show');
+}
+
+// ════════════════════════════════════════════
+//  Load Repairs
+// ════════════════════════════════════════════
+async function loadRepairs() {
+  try {
+    const r = await api({
+      action: 'getRepairs',
+      username: currentUser.username,
+      role: currentUser.role,
+      email: currentUser.email || '',
+      reporter_name: currentUser.fullname || ''
+    });
+    if (r.success) {
+      repairs = r.repairs || [];
+      renderHistory();
+      updateStats();
+    }
+  } catch(e) { console.log(e); }
+}
+
+function updateStats() {
+  setText('statWait',     repairs.filter(r=>r.status==='รอดำเนินการ').length);
+  setText('statProgress', repairs.filter(r=>r.status==='กำลังดำเนินการ').length);
+  setText('statDone',     repairs.filter(r=>r.status==='เสร็จสิ้น').length);
+  setText('statTotal',    repairs.length);
+}
+
+function renderHistory() {
+  const el = document.getElementById('repairList');
+  if (!repairs.length) {
+    el.innerHTML = `<div class="empty-state"><div class="empty-icon">📋</div><p>ไม่มีรายการแจ้งซ่อม</p></div>`;
+    return;
+  }
+  el.innerHTML = repairs.map((r,i) => {
+    const barColor = statusColor(r.status);
+    const chip     = statusChip(r.status);
+    const doneBtn  = (!currentUser.role==='admin' && (r.status==='รอดำเนินการ'||r.status==='กำลังดำเนินการ'))
+      ? `<button class="done-btn" onclick="event.stopPropagation();confirmDone(${i})">✅ ยืนยันซ่อมเสร็จแล้ว</button>` : '';
+    const date = r.submitted_at ? r.submitted_at.substring(0,10) : '';
+    return `
+    <div class="repair-card" onclick="showDetail(${i})">
+      <div class="repair-card-bar" style="background:${barColor}"></div>
+      <div class="repair-card-body">
+        <div class="repair-card-top">
+          <span class="repair-id">${r.repair_id}</span>
+          <span class="status-chip ${chip}">${r.status}</span>
+        </div>
+        <div class="repair-building">🏢 ${r.building||'(ไม่ระบุอาคาร)'}</div>
+        <div class="repair-loc">📍 ${r.location||''}</div>
+        <div class="repair-cat">${r.category}</div>
+        <div class="repair-desc">${r.description}</div>
+        <div class="repair-footer">
+          <span class="repair-reporter">👤 ${r.reporter_name}</span>
+          <span class="repair-date">${date}</span>
+        </div>
+        ${doneBtn}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ════════════════════════════════════════════
+//  Detail Modal
+// ════════════════════════════════════════════
+function showDetail(i) {
+  const r = repairs[i];
+  const imgHtml = r.image_url
+    ? `<img src="${r.image_url.replace('open?id=','uc?id=')}" class="modal-img" onerror="this.style.display='none'">`
+    : '<p style="color:var(--gray);font-size:13px">ไม่มีรูปภาพ</p>';
+
+  const adminHtml = currentUser.role === 'admin' ? `
+    <div class="detail-section">
+      <div class="detail-section-title">อัพเดทสถานะ (Admin)</div>
+      <select id="modalStatus" style="margin-bottom:8px">
+        ${['รอดำเนินการ','กำลังดำเนินการ','เสร็จสิ้น','ยกเลิก']
+          .map(s=>`<option ${s===r.status?'selected':''}>${s}</option>`).join('')}
+      </select>
+      <input type="text" id="modalNote" placeholder="หมายเหตุ" value="${r.note||''}" style="margin-bottom:8px">
+      <button class="btn btn-primary btn-sm" onclick="doUpdateStatus('${r.repair_id}',${i})">💾 บันทึก</button>
+    </div>` : '';
+
+  document.getElementById('detailContent').innerHTML = `
+    <div class="detail-section">
+      <div class="detail-section-title">ข้อมูลผู้แจ้ง</div>
+      <div class="detail-row"><span class="detail-key">ผู้แจ้ง:</span><span class="detail-val">${r.reporter_name}</span></div>
+      <div class="detail-row"><span class="detail-key">เบอร์ติดต่อ:</span><span class="detail-val">${r.phone}</span></div>
+      <div class="detail-row"><span class="detail-key">หัวหน้าภาค:</span><span class="detail-val">${r.supervisor||'-'}</span></div>
+    </div>
+    <div class="detail-section">
+      <div class="detail-section-title">สถานที่</div>
+      <div class="detail-row"><span class="detail-key">อาคาร:</span><span class="detail-val">${r.building}</span></div>
+      <div class="detail-row"><span class="detail-key">ห้อง/ชั้น:</span><span class="detail-val">${r.location||'-'}</span></div>
+    </div>
+    <div class="detail-section">
+      <div class="detail-section-title">รายละเอียดการแจ้งซ่อม</div>
+      <div class="detail-row"><span class="detail-key">รายการ:</span><span class="detail-val">${r.category}</span></div>
+      <div class="detail-row"><span class="detail-key">รายละเอียด:</span><span class="detail-val">${r.description}</span></div>
+    </div>
+    <div class="detail-section">
+      <div class="detail-section-title">รูปภาพ</div>
+      ${imgHtml}
+    </div>
+    ${adminHtml}`;
+  openModal('detailModal');
+}
+
+async function doUpdateStatus(repairId, idx) {
+  const status = document.getElementById('modalStatus').value;
+  const note   = document.getElementById('modalNote').value;
+  showLoading('กำลังบันทึก...');
+  try {
+    const r = await api({ action:'updateStatus', repair_id:repairId, status, note });
+    if (r.success) { toast('บันทึกสำเร็จ'); closeModal('detailModal'); loadRepairs(); }
+    else toast(r.message || 'บันทึกไม่สำเร็จ');
+  } catch(e) { toast('เชื่อมต่อไม่ได้'); }
+  hideLoading();
+}
+
+async function confirmDone(i) {
+  const r   = repairs[i];
+  const now = new Date().toLocaleString('th-TH');
+  if (!confirm(`ยืนยันว่างานซ่อม "${r.category}" ที่ ${r.building} เสร็จแล้ว?\n\nเวลา: ${now}`)) return;
+  showLoading('กำลังบันทึก...');
+  try {
+    const res = await api({
+      action: 'updateStatus', repair_id: r.repair_id,
+      status: 'เสร็จสิ้น',
+      note: 'ผู้แจ้งยืนยันซ่อมเสร็จแล้ว เมื่อ ' + now
+    });
+    if (res.success) { toast('✅ บันทึกเรียบร้อย'); loadRepairs(); }
+    else toast(res.message || 'บันทึกไม่สำเร็จ');
+  } catch(e) { toast('เชื่อมต่อไม่ได้'); }
+  hideLoading();
+}
+
+// ════════════════════════════════════════════
+//  Edit Profile
+// ════════════════════════════════════════════
+function showEditProfile() {
+  const u = currentUser;
+  set('editName',       u.fullname   || '');
+  set('editEmail',      u.email      || '');
+  set('editDept',       u.department || '');
+  set('editPhone',      u.phone      || '');
+  set('editSupervisor', u.supervisor || '');
+  set('editNewPass',    '');
+  openModal('editModal');
+}
+
+async function doUpdateProfile() {
+  showLoading('กำลังบันทึก...');
+  const updates = {
+    action: 'updateUser', username: currentUser.username,
+    fullname:   v('editName'),       email:      v('editEmail'),
+    department: v('editDept'),       phone:      v('editPhone'),
+    supervisor: v('editSupervisor'), newPassword: v('editNewPass') || undefined
+  };
+  try {
+    const r = await api(updates);
+    if (r.success) {
+      Object.assign(currentUser, {
+        fullname: updates.fullname, email: updates.email,
+        department: updates.department, phone: updates.phone,
+        supervisor: updates.supervisor
+      });
+      localStorage.setItem('repairUser', JSON.stringify(currentUser));
+      set('homeName', currentUser.fullname);
+      set('homeDept', currentUser.department);
+      toast('บันทึกสำเร็จ'); closeModal('editModal');
+    } else toast(r.message || 'บันทึกไม่สำเร็จ');
+  } catch(e) { toast('เชื่อมต่อไม่ได้'); }
+  hideLoading();
+}
+
+// ════════════════════════════════════════════
+//  Navigation
+// ════════════════════════════════════════════
+function goPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.bnav-item').forEach(b => b.classList.remove('active'));
+  document.getElementById('page' + name.charAt(0).toUpperCase() + name.slice(1)).classList.add('active');
+  const bn = document.getElementById('bn-' + name);
+  if (bn) bn.classList.add('active');
+  const titles = { home:'ระบบแจ้งซ่อม', report:'แจ้งซ่อม', history:'ประวัติ' };
+  document.getElementById('topbarTitle').textContent = titles[name] || 'ระบบแจ้งซ่อม';
+  window.scrollTo(0, 0);
+}
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  if (id !== 'appScreen') document.getElementById('bottomNav').style.display = 'none';
+}
+
+function showLogoutMenu() {
+  const u = currentUser;
+  document.getElementById('profileInfo').innerHTML = `
+    <div style="font-size:16px;font-weight:700">${u.fullname || u.username}</div>
+    <div style="font-size:12px;color:var(--gray)">${u.email || ''}</div>
+    <div style="font-size:12px;color:var(--gray)">${u.department || ''}</div>`;
+  openModal('logoutModal');
+}
+
+// ════════════════════════════════════════════
+//  Helpers
+// ════════════════════════════════════════════
+function v(id) { return document.getElementById(id)?.value?.trim() || ''; }
+function set(id, val) { const el = document.getElementById(id); if (el) el.value = val; }
+function setText(id, val) { const el = document.getElementById(id); if (el) el.textContent = val; }
+
+function toast(msg, dur=2500) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), dur);
+}
+
+function showLoading(msg='กำลังโหลด...') {
+  document.getElementById('loadingText').textContent = msg;
+  document.getElementById('loadingOverlay').classList.add('show');
+}
+function hideLoading() { document.getElementById('loadingOverlay').classList.remove('show'); }
+
+function openModal(id)  { document.getElementById(id).classList.add('show'); }
+function closeModal(id) { document.getElementById(id).classList.remove('show'); }
+
+function showConfirm(title, msg, cb) {
+  if (confirm(title + '\n' + msg)) cb();
+}
+
+function statusColor(s) {
+  return {
+    'รอดำเนินการ':    '#FF9800',
+    'กำลังดำเนินการ': '#2196F3',
+    'เสร็จสิ้น':      '#4CAF50',
+    'ยกเลิก':         '#9E9E9E'
+  }[s] || '#9E9E9E';
+}
+
+function statusChip(s) {
+  return {
+    'รอดำเนินการ':    'chip-orange',
+    'กำลังดำเนินการ': 'chip-blue',
+    'เสร็จสิ้น':      'chip-green',
+    'ยกเลิก':         'chip-gray'
+  }[s] || 'chip-gray';
+}
+
+function previewImage(input) {
+  const preview = document.getElementById('imgPreview');
+  if (input.files && input.files[0]) {
+    const reader = new FileReader();
+    reader.onload = e => { preview.src = e.target.result; preview.classList.add('show'); };
+    reader.readAsDataURL(input.files[0]);
+  }
+}
+
+function toBase64(file) {
+  return new Promise((res, rej) => {
+    const reader = new FileReader();
+    reader.onload = () => res(reader.result.split(',')[1]);
+    reader.onerror = rej;
+    reader.readAsDataURL(file);
+  });
+}
+</script>
+</body>
+</html>
