@@ -116,7 +116,7 @@
   /* ── Modal ── */
   .modal-overlay{position:fixed;top:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;height:100%;background:rgba(0,0,0,0.5);z-index:200;display:none;align-items:flex-end;padding:0;overflow:hidden}
   .modal-overlay.show{display:flex}
-  .modal{background:white;border-radius:20px 20px 0 0;width:100%;max-height:82vh;display:flex;flex-direction:column;overflow:hidden;}
+  .modal{background:white;border-radius:20px 20px 0 0;width:100%;max-height:70vh;display:flex;flex-direction:column;overflow:hidden;}
   .modal-handle{width:40px;height:4px;background:#E0E0E0;border-radius:2px;margin:0 auto 16px}
   .modal-title{font-size:17px;font-weight:700;margin-bottom:16px;color:#212121}
   .detail-row{display:flex;gap:8px;margin-bottom:8px;font-size:13px}
@@ -347,7 +347,7 @@
 
 <!-- Logout Menu -->
 <div class="modal-overlay" id="logoutModal" onclick="closeModal('logoutModal')">
-  <div class="modal" onclick="event.stopPropagation()" style="max-height:50vh;">
+  <div class="modal" onclick="event.stopPropagation()" style="max-height:70vh;">
     <div style="padding:14px 20px 10px;flex-shrink:0;">
       <div class="modal-handle"></div>
     </div>
