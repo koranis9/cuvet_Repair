@@ -1,4 +1,4 @@
-const CACHE = 'repair-v4';
+const CACHE = 'repair-v5';
 const FILES = [
   '/cuvet_Repair/',
   '/cuvet_Repair/index.html',
