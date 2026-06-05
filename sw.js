@@ -1,4 +1,4 @@
-const CACHE = 'repair-v1';
+const CACHE = 'repair-v2';
 // ปรับเส้นทางให้ถูกต้องตามโครงสร้าง GitHub Pages
 const FILES = [
   '/cuvet_Repair/',
