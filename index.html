@@ -16,12 +16,11 @@
   :root{--primary:#1565C0;--primary-dark:#0D47A1;--primary-light:#E3F2FD;--accent:#FF9800;--success:#4CAF50;--danger:#F44336;--white:#fff;--gray:#9E9E9E;--border:#E0E0E0}
 
   /* ── Layout ── */
-  .screen{display:none !important;min-height:100vh}
-  .screen.active{display:block !important}
+  .screen{visibility:hidden;position:fixed;top:0;left:0;right:0;bottom:0;z-index:-1;min-height:100vh;overflow-y:auto}
+  .screen.active{visibility:visible;position:relative;z-index:1}
 
   /* ── Login ── */
-  #loginScreen{background:var(--primary);display:none;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px;min-height:100vh}
-  #loginScreen.active{display:flex !important}
+  #loginScreen{background:var(--primary);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px;min-height:100vh}
   .login-logo{width:140px;height:140px;margin-bottom:16px;border-radius:24px}
   .login-title{color:white;font-size:24px;font-weight:700;margin-bottom:4px}
   .login-sub{color:rgba(255,255,255,0.8);font-size:13px;margin-bottom:32px;text-align:center}
@@ -30,7 +29,6 @@
 
   /* ── App Shell ── */
   #appScreen{background:#F5F5F5;padding-bottom:64px}
-  #appScreen.active{display:block !important}
   .topbar{background:var(--primary);color:white;padding:14px 16px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:100}
   .topbar-title{font-size:16px;font-weight:700;flex:1}
   .topbar-avatar{width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,0.25);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;cursor:pointer}
@@ -40,8 +38,8 @@
   .bnav-icon{font-size:22px}
 
   /* ── Pages ── */
-  .page{display:none !important;padding:16px}
-  .page.active{display:block !important}
+  .page{display:none;padding:16px}
+  .page.active{display:block}
 
   /* ── Home ── */
   .home-header{background:var(--primary);margin:-16px -16px 16px;padding:20px 16px 24px;color:white}
@@ -354,7 +352,7 @@
 // ════════════════════════════════════════════
 //  CONFIG — ใส่ Script URL ของคุณที่นี่
 // ════════════════════════════════════════════
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxdMCGBHaLn-N7XSrm0h_xswOwALjlBmyi6syH6847N5PhGXk_7HC2Mjb27T9Tb8766/exec';
+const SCRIPT_URL = 'YOUR_SCRIPT_URL_HERE/exechttps://script.google.com/macros/s/AKfycbxdMCGBHaLn-N7XSrm0h_xswOwALjlBmyi6syH6847N5PhGXk_7HC2Mjb27T9Tb8766/exec';
 
 // ════════════════════════════════════════════
 //  State
