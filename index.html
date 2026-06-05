@@ -352,7 +352,7 @@
 // ════════════════════════════════════════════
 //  CONFIG — ใส่ Script URL ของคุณที่นี่
 // ════════════════════════════════════════════
-const SCRIPT_URL = 'YOUR_SCRIPT_URL_HERE/exechttps://script.google.com/macros/s/AKfycbxdMCGBHaLn-N7XSrm0h_xswOwALjlBmyi6syH6847N5PhGXk_7HC2Mjb27T9Tb8766/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxdMCGBHaLn-N7XSrm0h_xswOwALjlBmyi6syH6847N5PhGXk_7HC2Mjb27T9Tb8766/exec';
 
 // ════════════════════════════════════════════
 //  State
@@ -366,11 +366,25 @@ let repairs     = [];
 window.addEventListener('load', () => {
   if ('serviceWorker' in navigator)
     navigator.serviceWorker.register('sw.js');
-  const saved = localStorage.getItem('repairUser');
-  if (saved) {
-    currentUser = JSON.parse(saved);
-    enterApp();
+
+  // เช็ค session ที่บันทึกไว้
+  try {
+    const saved = localStorage.getItem('repairUser');
+    if (saved) {
+      const user = JSON.parse(saved);
+      // ต้องมี username จึงจะถือว่า login อยู่
+      if (user && user.username) {
+        currentUser = user;
+        enterApp();
+        return;
+      }
+    }
+  } catch(e) {
+    localStorage.removeItem('repairUser');
   }
+
+  // ถ้าไม่มี session → แสดง login
+  showScreen('loginScreen');
 });
 
 // ════════════════════════════════════════════
@@ -689,9 +703,21 @@ function goPage(name) {
 }
 
 function showScreen(id) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  if (id !== 'appScreen') document.getElementById('bottomNav').style.display = 'none';
+  // ซ่อนทุก screen ก่อน
+  document.querySelectorAll('.screen').forEach(s => {
+    s.classList.remove('active');
+    s.style.display = 'none';
+  });
+  // แสดงเฉพาะ screen ที่ต้องการ
+  const target = document.getElementById(id);
+  if (target) {
+    target.classList.add('active');
+    target.style.display = id === 'loginScreen' ? 'flex' :
+                           id === 'appScreen'   ? 'block' : 'block';
+  }
+  // ซ่อน/แสดง bottomnav
+  const bnav = document.getElementById('bottomNav');
+  if (bnav) bnav.style.display = id === 'appScreen' ? 'flex' : 'none';
 }
 
 function showLogoutMenu() {
