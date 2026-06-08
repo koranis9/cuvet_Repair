@@ -619,9 +619,17 @@ function renderHistory() {
 // ════════════════════════════════════════════
 function showDetail(i) {
   const r = repairs[i];
-  const imgHtml = r.image_url
-    ? `<img src="${r.image_url.replace('open?id=','uc?id=')}" class="modal-img" onerror="this.style.display='none'">`
-    : '<p style="color:var(--gray);font-size:13px">ไม่มีรูปภาพ</p>';
+  function getDriveImgUrl(url) {
+  if (!url) return '';
+  const m = url.match(/[-\w]{25,}/);
+  if (m) return 'https://lh3.googleusercontent.com/d/' + m[0];
+  return url.replace('open?id=','uc?id=');
+}
+
+const imgHtml = r.image_url
+  ? `<img src="${getDriveImgUrl(r.image_url)}" class="modal-img"
+         onerror="this.src='';this.style.display='none'">`
+  : '<p style="color:var(--gray);font-size:13px">ไม่มีรูปภาพ</p>';
 
   const adminHtml = currentUser.role === 'admin' ? `
     <div class="detail-section">
