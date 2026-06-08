@@ -589,7 +589,7 @@ function renderHistory() {
   el.innerHTML = repairs.map((r,i) => {
     const barColor = statusColor(r.status);
     const chip     = statusChip(r.status);
-    const doneBtn  = (!currentUser.role==='admin' && (r.status==='รอดำเนินการ'||r.status==='กำลังดำเนินการ'))
+    const doneBtn  = (currentUser.role !== 'admin' && (r.status==='รอดำเนินการ'||r.status==='กำลังดำเนินการ'))
       ? `<button class="done-btn" onclick="event.stopPropagation();confirmDone(${i})">✅ ยืนยันซ่อมเสร็จแล้ว</button>` : '';
     const date = r.submitted_at ? r.submitted_at.substring(0,10) : '';
     return `
