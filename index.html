@@ -381,9 +381,9 @@
       <input type="password" id="editNewPass" placeholder="เว้นว่างถ้าไม่เปลี่ยน"></div>
     <button class="btn btn-primary" onclick="doUpdateProfile()" style="margin-bottom:8px">บันทึก</button>
     <button class="btn btn-outline" onclick="closeModal('editModal')">ยกเลิก</button>
+    </div>
   </div>
 </div>
-
 <script>
 // ════════════════════════════════════════════
 //  CONFIG — ใส่ Script URL ของคุณที่นี่
@@ -480,7 +480,12 @@ function doLogout() {
   showScreen('loginScreen');
   set('loginUser',''); set('loginPass','');
 }
-
+function prefillReport() {
+  const u = currentUser;
+  set('rName',       u.fullname   || '');
+  set('rPhone',      u.phone      || '');
+  set('rSupervisor', u.supervisor || '');
+}
 // ════════════════════════════════════════════
 //  App
 // ════════════════════════════════════════════
