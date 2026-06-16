@@ -403,13 +403,18 @@ window.addEventListener('load', () => {
   if ('serviceWorker' in navigator)
     navigator.serviceWorker.register('sw.js');
 
-  // เช็ค session ที่บันทึกไว้
   try {
     const saved = localStorage.getItem('repairUser');
     if (saved) {
       const user = JSON.parse(saved);
-      // ต้องมี username จึงจะถือว่า login อยู่
       if (user && user.username) {
+        // ถ้าไม่มี password เก็บไว้ → บังคับ Login ใหม่
+        if (!user.password) {
+          localStorage.removeItem('repairUser');
+          showScreen('loginScreen');
+          toast('กรุณา Login ใหม่เพื่ออัพเดทข้อมูล');
+          return;
+        }
         currentUser = user;
         enterApp();
         return;
@@ -419,10 +424,8 @@ window.addEventListener('load', () => {
     localStorage.removeItem('repairUser');
   }
 
-  // ถ้าไม่มี session → แสดง login
   showScreen('loginScreen');
 });
-
 // ════════════════════════════════════════════
 //  API
 // ════════════════════════════════════════════
