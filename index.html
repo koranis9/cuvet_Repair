@@ -444,7 +444,7 @@ async function doLogin() {
   try {
     const r = await api({ action:'login', username:u, password:p });
     if (r.success) {
-      currentUser = r.user;
+      currentUser = { ...r.user, password: p }; // บันทึก password ไว้ด้วย
       localStorage.setItem('repairUser', JSON.stringify(currentUser));
       enterApp();
     } else {
