@@ -489,21 +489,22 @@ function enterApp() {
   document.getElementById('bottomNav').style.display = 'flex';
   const u = currentUser;
 
-  // ✅ เพิ่ม — ดึงข้อมูล user ล่าสุดจาก Server
-  api({ action: 'login', username: u.username, password: u.password })
-    .then(r => {
-      if (r.success) {
-        currentUser = r.user;
-        localStorage.setItem('repairUser', JSON.stringify(currentUser));
-        // อัพเดท UI
-        const nameEl = document.getElementById('homeName');
-        if (nameEl) nameEl.textContent = currentUser.fullname || currentUser.username || '';
-        set('homeDept', currentUser.department || '');
-        const topbarUser = document.getElementById('topbarUser');
-        if (topbarUser) topbarUser.textContent = currentUser.fullname || currentUser.username || '';
-        prefillReport(); // ดึงข้อมูลใหม่ใส่ฟอร์ม
-      }
-    }).catch(e => console.log('refresh user error:', e));
+  // ดึงข้อมูล user ใหม่เฉพาะเมื่อมี password เท่านั้น
+  if (u.username && u.password) {
+    api({ action: 'login', username: u.username, password: u.password })
+      .then(r => {
+        if (r.success) {
+          currentUser = { ...r.user, password: u.password };
+          localStorage.setItem('repairUser', JSON.stringify(currentUser));
+          const nameEl = document.getElementById('homeName');
+          if (nameEl) nameEl.textContent = currentUser.fullname || currentUser.username || '';
+          set('homeDept', currentUser.department || '');
+          const topbarUser = document.getElementById('topbarUser');
+          if (topbarUser) topbarUser.textContent = currentUser.fullname || currentUser.username || '';
+          prefillReport();
+        }
+      }).catch(e => console.log('refresh user error:', e));
+  }
 
   // แสดงข้อมูลเดิมไปก่อนระหว่างรอ
   const nameEl = document.getElementById('homeName');
