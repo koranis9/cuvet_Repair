@@ -204,7 +204,7 @@
       <input type="text" id="regDept" placeholder="ภาควิชา/หน่วยงาน"></div>
     <div class="form-group"><label class="form-label">เบอร์โทรศัพท์ <span class="req">*</span></label>
       <input type="tel" id="regPhone" placeholder="08X-XXXXXXX"></div>
-    <div class="form-group"><label class="form-label">หัวหน้าภาควิชา</label>
+    <div class="form-group"><label class="form-label">หัวหน้าหน่วยงาน</label>
       <input type="text" id="regSupervisor" placeholder="ชื่อหัวหน้า"></div>
     <button class="btn btn-primary" onclick="doRegister()">ลงทะเบียน</button>
   </div>
@@ -263,7 +263,7 @@
         <input type="text" id="rName"></div>
       <div class="form-group"><label class="form-label">เบอร์ติดต่อ <span class="req">*</span></label>
         <input type="tel" id="rPhone"></div>
-      <div class="form-group"><label class="form-label">หัวหน้าภาควิชา</label>
+      <div class="form-group"><label class="form-label">หัวหน้าหน่วยงาน</label>
         <input type="text" id="rSupervisor"></div>
     </div>
     <div class="form-section">
@@ -375,7 +375,7 @@
       <input type="text" id="editDept"></div>
     <div class="form-group"><label class="form-label">เบอร์โทรศัพท์</label>
       <input type="tel" id="editPhone"></div>
-    <div class="form-group"><label class="form-label">หัวหน้าภาควิชา</label>
+    <div class="form-group"><label class="form-label">หัวหน้าหน่วยงาน</label>
       <input type="text" id="editSupervisor"></div>
     <div class="form-group"><label class="form-label">รหัสผ่านใหม่ (ถ้าต้องการเปลี่ยน)</label>
       <input type="password" id="editNewPass" placeholder="เว้นว่างถ้าไม่เปลี่ยน"></div>
@@ -666,7 +666,7 @@ const imgHtml = r.image_url
       <div class="detail-section-title">ข้อมูลผู้แจ้ง</div>
       <div class="detail-row"><span class="detail-key">ผู้แจ้ง:</span><span class="detail-val">${r.reporter_name}</span></div>
       <div class="detail-row"><span class="detail-key">เบอร์ติดต่อ:</span><span class="detail-val">${r.phone}</span></div>
-      <div class="detail-row"><span class="detail-key">หัวหน้าภาค:</span><span class="detail-val">${r.supervisor||'-'}</span></div>
+      <div class="detail-row"><span class="detail-key">หัวหน้าหน่วยงาน:</span><span class="detail-val">${r.supervisor||'-'}</span></div>
     </div>
     <div class="detail-section">
       <div class="detail-section-title">สถานที่</div>
