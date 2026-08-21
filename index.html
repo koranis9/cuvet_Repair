@@ -239,15 +239,23 @@
         <div class="quick-btn-icon">🔧</div>
         <div class="quick-btn-label">แจ้งซ่อม</div>
       </div>
-      <div class="quick-btn" onclick="goPage('history')">
+      <div class="quick-btn" onclick="openRepairList('pending')">
+        <div class="quick-btn-icon">🟠</div>
+        <div class="quick-btn-label">รอดำเนินการ</div>
+      </div>
+      <div class="quick-btn" onclick="openRepairList('done')">
+        <div class="quick-btn-icon">✅</div>
+        <div class="quick-btn-label">เสร็จแล้ว</div>
+      </div>
+      <div class="quick-btn" onclick="openRepairList('all')">
         <div class="quick-btn-icon">📋</div>
-        <div class="quick-btn-label">ประวัติ</div>
+        <div class="quick-btn-label">ประวัติทั้งหมด</div>
       </div>
       <div class="quick-btn" onclick="showEditProfile()">
         <div class="quick-btn-icon">👤</div>
         <div class="quick-btn-label">ข้อมูลส่วนตัว</div>
       </div>
-      <div class="quick-btn" onclick="loadRepairs();goPage('history')">
+      <div class="quick-btn" onclick="loadRepairs();openRepairList(historyMode || 'all')">
         <div class="quick-btn-icon">🔄</div>
         <div class="quick-btn-label">รีเฟรช</div>
       </div>
@@ -308,8 +316,13 @@
   <!-- History -->
   <div id="pageHistory" class="page">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-      <div class="section-title" style="margin:0">ประวัติการแจ้งซ่อม</div>
+      <div class="section-title" id="historyTitle" style="margin:0">ประวัติการแจ้งซ่อม</div>
       <button class="btn btn-outline btn-sm" style="width:auto;padding:8px 14px" onclick="loadRepairs()">🔄</button>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px">
+      <button class="btn btn-outline btn-sm" onclick="openRepairList('pending')">รอดำเนินการ</button>
+      <button class="btn btn-outline btn-sm" onclick="openRepairList('done')">เสร็จแล้ว</button>
+      <button class="btn btn-outline btn-sm" onclick="openRepairList('all')">ทั้งหมด</button>
     </div>
     <div id="repairList"></div>
   </div>
@@ -323,7 +336,7 @@
   <div class="bnav-item" id="bn-report" onclick="goPage('report')">
     <div class="bnav-icon">🔧</div><div>แจ้งซ่อม</div>
   </div>
-  <div class="bnav-item" id="bn-history" onclick="goPage('history')">
+  <div class="bnav-item" id="bn-history" onclick="openRepairList('all')">
     <div class="bnav-icon">📋</div><div>ประวัติ</div>
   </div>
 </div>
@@ -395,6 +408,7 @@ const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwzyM7or5NEUdpLmjJLA
 // ════════════════════════════════════════════
 let currentUser = null;
 let repairs     = [];
+let historyMode = 'all';
 
 // ════════════════════════════════════════════
 //  Init
@@ -559,7 +573,7 @@ async function doSubmit() {
     });
     if (r.success) {
       showConfirm('✅ แจ้งซ่อมสำเร็จ!', `รหัส: ${r.repair_id}\n\nระบบจะส่ง Email และแจ้งเตือน LINE ทันที`, () => {
-        clearReport(); loadRepairs(); goPage('history');
+        clearReport(); loadRepairs(); openRepairList('pending');
       });
     } else toast(r.message || 'แจ้งซ่อมไม่สำเร็จ');
   } catch(e) { toast('เชื่อมต่อไม่ได้'); }
@@ -601,14 +615,18 @@ function updateStats() {
 
 function renderHistory() {
   const el = document.getElementById('repairList');
-  if (!repairs.length) {
-    el.innerHTML = `<div class="empty-state"><div class="empty-icon">📋</div><p>ไม่มีรายการแจ้งซ่อม</p></div>`;
+  const filteredRepairs = getFilteredRepairs();
+  const titleEl = document.getElementById('historyTitle');
+  if (titleEl) titleEl.textContent = getHistoryTitle();
+
+  if (!filteredRepairs.length) {
+    el.innerHTML = `<div class="empty-state"><div class="empty-icon">${getHistoryEmptyIcon()}</div><p>${getHistoryEmptyText()}</p></div>`;
     return;
   }
-  el.innerHTML = repairs.map((r,i) => {
+  el.innerHTML = filteredRepairs.map(({ repair:r, index:i }) => {
     const barColor = statusColor(r.status);
     const chip     = statusChip(r.status);
-    const doneBtn  = (currentUser.role !== 'admin' && (r.status==='รอดำเนินการ'||r.status==='กำลังดำเนินการ'))
+    const doneBtn  = (r.status==='รอดำเนินการ'||r.status==='กำลังดำเนินการ')
       ? `<button class="done-btn" onclick="event.stopPropagation();confirmDone(${i})">✅ ยืนยันซ่อมเสร็จแล้ว</button>` : '';
     const date = r.submitted_at ? r.submitted_at.substring(0,10) : '';
     return `
@@ -631,6 +649,40 @@ function renderHistory() {
       </div>
     </div>`;
   }).join('');
+}
+
+function openRepairList(mode) {
+  historyMode = mode || 'all';
+  goPage('history');
+  renderHistory();
+}
+
+function getFilteredRepairs() {
+  return repairs
+    .map((repair, index) => ({ repair, index }))
+    .filter(item => {
+      if (historyMode === 'pending') return item.repair.status !== 'เสร็จสิ้น';
+      if (historyMode === 'done') return item.repair.status === 'เสร็จสิ้น';
+      return true;
+    });
+}
+
+function getHistoryTitle() {
+  if (historyMode === 'pending') return 'รายการรอดำเนินการ';
+  if (historyMode === 'done') return 'รายการเสร็จแล้ว';
+  return 'ประวัติการแจ้งซ่อมทั้งหมด';
+}
+
+function getHistoryEmptyIcon() {
+  if (historyMode === 'pending') return '🟠';
+  if (historyMode === 'done') return '✅';
+  return '📋';
+}
+
+function getHistoryEmptyText() {
+  if (historyMode === 'pending') return 'ไม่มีรายการรอดำเนินการ';
+  if (historyMode === 'done') return 'ไม่มีรายการเสร็จแล้ว';
+  return 'ไม่มีรายการแจ้งซ่อม';
 }
 
 // ════════════════════════════════════════════
