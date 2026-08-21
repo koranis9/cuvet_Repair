@@ -1,4 +1,4 @@
-const CACHE = 'repair-v14';
+const CACHE = 'repair-v15';
 const FILES = [
   '/cuvet_Repair/manifest.json',
   '/cuvet_Repair/icon-192.png'
@@ -20,14 +20,13 @@ self.addEventListener('activate', e => {
 });
 
 self.addEventListener('fetch', e => {
-  // index.html → ดึงจาก network เสมอ ไม่ใช้ cache
-  if (e.request.url.includes('index.html') || 
+  if (e.request.url.includes('index.html') ||
       e.request.url.endsWith('/cuvet_Repair/') ||
       e.request.url.endsWith('/cuvet_Repair')) {
     e.respondWith(fetch(e.request));
     return;
   }
-  // ไฟล์อื่น → ใช้ cache
+
   e.respondWith(
     caches.match(e.request).then(r => r || fetch(e.request))
   );
