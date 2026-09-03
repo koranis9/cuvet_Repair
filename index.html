@@ -12,15 +12,15 @@
 <title>ระบบแจ้งซ่อม</title>
 <style>
   *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-  body{font-family:'Sarabun',sans-serif;background:#BBDEFB;color:#212121;min-height:100vh;display:flex;justify-content:center;}
-  :root{--primary:#1565C0;--primary-dark:#0D47A1;--primary-light:#E3F2FD;--accent:#FF9800;--success:#4CAF50;--danger:#F44336;--white:#fff;--gray:#9E9E9E;--border:#E0E0E0}
+  body{font-family:'Sarabun',sans-serif;background:#B9D9F4;color:#172033;min-height:100vh;display:flex;justify-content:center;}
+  :root{--primary:#1565C0;--primary-dark:#0D47A1;--primary-light:#E3F2FD;--accent:#FF8500;--success:#21C467;--danger:#F44336;--white:#fff;--gray:#7E8798;--border:#E6EDF7;--violet:#7348F2;--cyan:#1CB9BE}
 
   /* ── Desktop wrapper — จำกัดความกว้างแบบมือถือ ── */
   #app-wrapper{
     width:100%;
     max-width:480px;
     height:100vh;
-    background:#F5F5F5;
+    background:#F7FAFF;
     position:relative;
     box-shadow:0 0 40px rgba(0,0,0,0.15);
     overflow:hidden;
@@ -48,36 +48,75 @@
   .login-card h2{font-size:16px;margin-bottom:16px;color:#212121}
 
   /* ── App Shell ── */
-  #appScreen{background:#F5F5F5;padding-bottom:64px;flex:1;overflow-y:auto;}
-  .topbar{background:var(--primary);color:white;padding:14px 16px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:100;width:100%}
-  .topbar-title{font-size:16px;font-weight:700;flex:1}
+  #appScreen{background:#F7FAFF;padding-bottom:86px;flex:1;overflow-y:auto;}
+  .topbar{background:linear-gradient(135deg,#0756B8 0%,#176ED4 46%,#7048E8 100%);color:white;padding:28px 18px 54px;display:flex;align-items:flex-start;gap:12px;position:sticky;top:0;z-index:100;width:100%;overflow:hidden}
+  .topbar:before{content:"";position:absolute;inset:-40px -30px auto auto;width:310px;height:170px;background:rgba(255,255,255,0.12);border-radius:50%;transform:rotate(-12deg)}
+  .topbar:after{content:"";position:absolute;left:-32px;right:-32px;bottom:-34px;height:78px;background:#F7FAFF;border-radius:50% 50% 0 0/100% 100% 0 0}
+  .topbar-title{font-size:28px;font-weight:700;line-height:1.18;flex:1;position:relative;z-index:1}
   .topbar-avatar{width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,0.25);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;cursor:pointer}
-  .bottomnav{position:sticky;bottom:0;left:0;right:0;background:white;border-top:0.5px solid var(--border);display:flex;z-index:100;margin-top:auto}
-  .bnav-item{flex:1;display:flex;flex-direction:column;align-items:center;padding:8px 0;cursor:pointer;color:var(--gray);font-size:10px;gap:3px;transition:color 0.2s}
+  .topbar button{position:relative;z-index:1}
+  .bottomnav{position:sticky;bottom:14px;left:0;right:0;background:white;border:1px solid rgba(230,237,247,0.9);display:flex;z-index:100;margin:0 16px 0;border-radius:18px;box-shadow:0 12px 32px rgba(37,66,118,0.16);overflow:hidden}
+  .bnav-item{flex:1;display:flex;flex-direction:column;align-items:center;padding:10px 0;cursor:pointer;color:#687286;font-size:11px;gap:4px;transition:color 0.2s;position:relative}
+  .bnav-item.active:before{content:"";position:absolute;top:0;width:54px;height:4px;background:#2477F2;border-radius:0 0 4px 4px}
   .bnav-item.active{color:var(--primary)}
-  .bnav-icon{font-size:22px}
+  .bnav-icon{font-size:24px}
 
   /* ── Pages ── */
-  .page{display:none;padding:16px}
+  .page{display:none;padding:18px}
   .page.active{display:block}
 
   /* ── Home ── */
-  .home-header{background:var(--primary);margin:-16px -16px 16px;padding:20px 16px 24px;color:white}
+  .home-header{display:none}
   .home-greeting{font-size:14px;opacity:0.85}
   .home-name{font-size:20px;font-weight:700;margin-top:2px}
   .home-dept{font-size:12px;opacity:0.75;margin-top:2px}
-  .stat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:10px}
-  .stat-card{background:white;border-radius:12px;padding:10px;text-align:center;border:0.5px solid var(--border)}
-  .stat-num{font-size:22px;font-weight:700;color:var(--primary)}
-  .stat-label{font-size:10px;color:var(--gray);margin-top:1px}
+  .stat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:22px}
+  .stat-card{background:white;border-radius:18px;padding:18px 14px;text-align:left;border:1px solid rgba(230,237,247,0.96);box-shadow:0 14px 34px rgba(34,64,112,0.10);min-height:112px;display:flex;align-items:center;gap:14px;position:relative;overflow:hidden}
+  .stat-card:after{content:"";position:absolute;right:-22px;bottom:-26px;width:118px;height:58px;border-radius:50%;background:rgba(21,101,192,0.08)}
+  .stat-icon{width:58px;height:58px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:30px;flex:0 0 58px}
+  .stat-num{font-size:36px;line-height:1;font-weight:700;color:var(--primary)}
+  .stat-label{font-size:14px;color:#586174;margin-top:8px;font-weight:600}
+  .stat-card.orange{border-bottom:4px solid var(--accent)}
+  .stat-card.blue{border-bottom:4px solid #2477F2}
+  .stat-card.green{border-bottom:4px solid var(--success)}
+  .stat-card.purple{border-bottom:4px solid var(--violet)}
+  .stat-card.orange .stat-icon{background:#FFF1E5;color:var(--accent)}
+  .stat-card.blue .stat-icon{background:#EAF2FF;color:#2477F2}
+  .stat-card.green .stat-icon{background:#E9F9F0;color:var(--success)}
+  .stat-card.purple .stat-icon{background:#F0EAFF;color:var(--violet)}
   .stat-card.orange .stat-num{color:#FF9800}
   .stat-card.blue .stat-num{color:#2196F3}
   .stat-card.green .stat-num{color:#4CAF50}
-  .quick-btns{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
-  .quick-btn{background:white;border-radius:12px;padding:12px;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;border:0.5px solid var(--border);transition:background 0.15s}
-  .quick-btn:active{background:#F5F5F5}
-  .quick-btn-icon{font-size:22px}
-  .quick-btn-label{font-size:12px;font-weight:600;color:#424242}
+  .stat-card.purple .stat-num{color:var(--violet)}
+  .quick-btns{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+  .quick-btn{background:white;border-radius:16px;padding:16px 12px;display:flex;flex-direction:row;align-items:center;gap:12px;cursor:pointer;border:1px solid rgba(230,237,247,0.96);transition:transform 0.15s,box-shadow 0.15s;box-shadow:0 12px 28px rgba(34,64,112,0.09);min-height:76px}
+  .quick-btn:active{transform:scale(0.99)}
+  .quick-btn-icon{width:48px;height:48px;border-radius:50%;font-size:25px;display:flex;align-items:center;justify-content:center;background:#EAF2FF;color:#2477F2;flex:0 0 48px}
+  .quick-btn-label{font-size:15px;font-weight:700;color:#172033;flex:1}
+  .quick-btn-arrow{font-size:24px;color:#687286;font-weight:700}
+  .quick-btn.primary-action{background:linear-gradient(135deg,#1267D6 0%,#1E80FF 55%,#7048E8 100%);color:white;box-shadow:0 14px 30px rgba(30,128,255,0.22)}
+  .quick-btn.primary-action .quick-btn-icon{background:rgba(255,255,255,0.18);color:white}
+  .quick-btn.primary-action .quick-btn-label{color:white}
+  .quick-btn.primary-action .quick-btn-arrow{color:white}
+  .quick-btn.warn .quick-btn-icon{background:#FFF1E5;color:var(--accent)}
+  .quick-btn.done .quick-btn-icon{background:#E9F9F0;color:var(--success)}
+  .quick-btn.history .quick-btn-icon{background:#F0EAFF;color:var(--violet)}
+  .quick-btn.profile .quick-btn-icon{background:#EAF2FF;color:#2C6BED}
+  .quick-btn.refresh .quick-btn-icon{background:#E7FAFA;color:var(--cyan)}
+  .admin-panel{display:none;margin-top:22px}
+  .admin-panel.show{display:block}
+  .admin-card{background:white;border:1px solid rgba(230,237,247,0.96);border-radius:16px;box-shadow:0 12px 28px rgba(34,64,112,0.08);padding:14px;margin-bottom:12px}
+  .admin-card-title{display:flex;justify-content:space-between;align-items:center;font-size:14px;font-weight:700;color:#172033;margin-bottom:10px}
+  .admin-card-title button{width:auto;border:0;background:#EAF2FF;color:#1565C0;border-radius:999px;padding:5px 10px;font-family:inherit;font-size:11px;font-weight:700}
+  .admin-list{display:flex;flex-direction:column;gap:8px}
+  .admin-item{display:flex;gap:10px;align-items:flex-start;padding:10px;border-radius:12px;background:#F8FBFF;border:1px solid #EDF3FB;cursor:pointer}
+  .admin-item:active{transform:scale(0.99)}
+  .admin-dot{width:10px;height:10px;border-radius:50%;margin-top:6px;flex:0 0 10px}
+  .admin-item-main{flex:1;min-width:0}
+  .admin-item-title{font-size:13px;font-weight:700;color:#172033;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .admin-item-meta{font-size:11px;color:#7E8798;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .admin-item-age{font-size:11px;font-weight:700;color:#FF8500;white-space:nowrap}
+  .admin-empty{font-size:12px;color:#7E8798;padding:10px;background:#F8FBFF;border-radius:12px}
 
   /* ── Form ── */
   .form-group{margin-bottom:14px}
@@ -144,7 +183,19 @@
   @keyframes spin{to{transform:rotate(360deg)}}
   .empty-state{text-align:center;padding:48px 16px;color:var(--gray)}
   .empty-icon{font-size:48px;margin-bottom:12px}
-  .section-title{font-size:13px;font-weight:700;color:#424242;margin-bottom:8px}
+  .section-title{font-size:19px;font-weight:700;color:#172033;margin:18px 0 14px;padding-left:12px;border-left:4px solid #2477F2;line-height:1.2}
+  @media (max-width:420px){
+    .topbar-title{font-size:24px}
+    .stat-grid,.quick-btns{gap:10px}
+    .stat-card{padding:14px 10px;gap:10px;min-height:98px}
+    .stat-icon{width:48px;height:48px;font-size:24px;flex-basis:48px}
+    .stat-num{font-size:30px}
+    .stat-label{font-size:12px}
+    .quick-btn{padding:13px 10px;min-height:68px}
+    .quick-btn-icon{width:42px;height:42px;font-size:22px;flex-basis:42px}
+    .quick-btn-label{font-size:13px}
+    .admin-item-title{font-size:12px}
+  }
   .loading-overlay{position:fixed;top:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;height:100%;background:rgba(255,255,255,0.8);z-index:150;display:none;align-items:center;justify-content:center;flex-direction:column;gap:12px}
   .loading-overlay.show{display:flex}
   .loading-spinner{width:40px;height:40px;border:4px solid var(--primary-light);border-top-color:var(--primary);border-radius:50%;animation:spin 0.8s linear infinite}
@@ -215,9 +266,9 @@
   <div class="topbar">
     <div style="flex:1">
       <div class="topbar-title" id="topbarTitle">ระบบแจ้งซ่อม</div>
-      <div id="topbarUser" style="font-size:11px;opacity:0.85;margin-top:1px"></div>
+      <div id="topbarUser" style="font-size:15px;opacity:0.9;margin-top:10px;position:relative;z-index:1"></div>
     </div>
-    <button onclick="doLogout()" style="background:rgba(255,255,255,0.2);border:1px solid rgba(255,255,255,0.4);color:white;padding:6px 14px;border-radius:8px;font-size:12px;font-family:inherit;cursor:pointer">🚪 ออกจากระบบ</button>
+    <button onclick="doLogout()" style="background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.65);color:white;padding:10px 14px;border-radius:12px;font-size:13px;font-weight:700;font-family:inherit;cursor:pointer">🚪 ออกจากระบบ</button>
   </div>
 
   <!-- Home -->
@@ -228,36 +279,59 @@
     </div>
     <div class="section-title">สรุปการแจ้งซ่อม</div>
     <div class="stat-grid">
-      <div class="stat-card orange"><div class="stat-num" id="statWait">0</div><div class="stat-label">รอดำเนินการ</div></div>
-      <div class="stat-card blue"><div class="stat-num" id="statProgress">0</div><div class="stat-label">กำลังดำเนินการ</div></div>
-      <div class="stat-card green"><div class="stat-num" id="statDone">0</div><div class="stat-label">เสร็จสิ้น</div></div>
-      <div class="stat-card"><div class="stat-num" id="statTotal">0</div><div class="stat-label">ทั้งหมด</div></div>
+      <div class="stat-card orange"><div class="stat-icon">📋</div><div><div class="stat-num" id="statWait">0</div><div class="stat-label">รอดำเนินการ</div></div></div>
+      <div class="stat-card blue"><div class="stat-icon">🔧</div><div><div class="stat-num" id="statProgress">0</div><div class="stat-label">กำลังดำเนินการ</div></div></div>
+      <div class="stat-card green"><div class="stat-icon">✓</div><div><div class="stat-num" id="statDone">0</div><div class="stat-label">เสร็จสิ้น</div></div></div>
+      <div class="stat-card purple"><div class="stat-icon">◷</div><div><div class="stat-num" id="statTotal">0</div><div class="stat-label">ทั้งหมด</div></div></div>
     </div>
     <div class="section-title">เมนูหลัก</div>
     <div class="quick-btns">
-      <div class="quick-btn" onclick="goPage('report')">
+      <div class="quick-btn primary-action" onclick="goPage('report')">
         <div class="quick-btn-icon">🔧</div>
         <div class="quick-btn-label">แจ้งซ่อม</div>
+        <div class="quick-btn-arrow">›</div>
       </div>
-      <div class="quick-btn" onclick="openRepairList('pending')">
-        <div class="quick-btn-icon">🟠</div>
+      <div class="quick-btn warn" onclick="openRepairList('pending')">
+        <div class="quick-btn-icon">◷</div>
         <div class="quick-btn-label">รอดำเนินการ</div>
+        <div class="quick-btn-arrow">›</div>
       </div>
-      <div class="quick-btn" onclick="openRepairList('done')">
-        <div class="quick-btn-icon">✅</div>
+      <div class="quick-btn done" onclick="openRepairList('done')">
+        <div class="quick-btn-icon">✓</div>
         <div class="quick-btn-label">เสร็จแล้ว</div>
+        <div class="quick-btn-arrow">›</div>
       </div>
-      <div class="quick-btn" onclick="openRepairList('all')">
+      <div class="quick-btn history" onclick="openRepairList('all')">
         <div class="quick-btn-icon">📋</div>
         <div class="quick-btn-label">ประวัติทั้งหมด</div>
+        <div class="quick-btn-arrow">›</div>
       </div>
-      <div class="quick-btn" onclick="showEditProfile()">
+      <div class="quick-btn profile" onclick="showEditProfile()">
         <div class="quick-btn-icon">👤</div>
         <div class="quick-btn-label">ข้อมูลส่วนตัว</div>
+        <div class="quick-btn-arrow">›</div>
       </div>
-      <div class="quick-btn" onclick="loadRepairs();openRepairList(historyMode || 'all')">
+      <div class="quick-btn refresh" onclick="loadRepairs();openRepairList(historyMode || 'all')">
         <div class="quick-btn-icon">🔄</div>
         <div class="quick-btn-label">รีเฟรช</div>
+        <div class="quick-btn-arrow">›</div>
+      </div>
+    </div>
+    <div class="admin-panel" id="adminPanel">
+      <div class="section-title">สำหรับผู้ดูแล</div>
+      <div class="admin-card">
+        <div class="admin-card-title">
+          <span>งานวันนี้</span>
+          <button onclick="openRepairList('all')">ประวัติ</button>
+        </div>
+        <div class="admin-list" id="todayList"></div>
+      </div>
+      <div class="admin-card">
+        <div class="admin-card-title">
+          <span>งานค้างนาน</span>
+          <button onclick="openRepairList('pending')">ดูทั้งหมด</button>
+        </div>
+        <div class="admin-list" id="overdueList"></div>
       </div>
     </div>
   </div>
@@ -522,7 +596,7 @@ function enterApp() {
           if (nameEl) nameEl.textContent = currentUser.fullname || currentUser.username || '';
           set('homeDept', currentUser.department || '');
           const topbarUser = document.getElementById('topbarUser');
-          if (topbarUser) topbarUser.textContent = currentUser.fullname || currentUser.username || '';
+          if (topbarUser) topbarUser.textContent = 'สวัสดี 👋 ' + (currentUser.fullname || currentUser.username || '');
           prefillReport();
         }
       }).catch(e => console.log('refresh user error:', e));
@@ -533,7 +607,7 @@ function enterApp() {
   if (nameEl) nameEl.textContent = u.fullname || u.username || '';
   set('homeDept', u.department || '');
   const topbarUser = document.getElementById('topbarUser');
-  if (topbarUser) topbarUser.textContent = u.fullname || u.username || '';
+  if (topbarUser) topbarUser.textContent = 'สวัสดี 👋 ' + (u.fullname || u.username || '');
 
   prefillReport();
   loadRepairs();
@@ -602,6 +676,7 @@ async function loadRepairs() {
       repairs = r.repairs || [];
       renderHistory();
       updateStats();
+      renderAdminHome();
     }
   } catch(e) { console.log(e); }
 }
@@ -611,6 +686,73 @@ function updateStats() {
   setText('statProgress', repairs.filter(r=>r.status==='กำลังดำเนินการ').length);
   setText('statDone',     repairs.filter(r=>r.status==='เสร็จสิ้น').length);
   setText('statTotal',    repairs.length);
+}
+
+function renderAdminHome() {
+  const panel = document.getElementById('adminPanel');
+  if (!panel) return;
+
+  if (!currentUser || currentUser.role !== 'admin') {
+    panel.classList.remove('show');
+    return;
+  }
+
+  panel.classList.add('show');
+  const openRepairs = repairs
+    .map((repair, index) => ({ repair, index }))
+    .filter(item => item.repair.status !== 'เสร็จสิ้น');
+
+  const overdueItems = openRepairs
+    .slice()
+    .sort((a, b) => getRepairAgeDays(b.repair) - getRepairAgeDays(a.repair))
+    .slice(0, 3);
+
+  const todayItems = repairs
+    .map((repair, index) => ({ repair, index }))
+    .filter(item => isRepairToday(item.repair))
+    .slice(0, 3);
+
+  renderAdminList('todayList', todayItems, 'วันนี้ยังไม่มีรายการแจ้งซ่อม');
+  renderAdminList('overdueList', overdueItems, 'ไม่มีงานค้างที่ต้องติดตาม');
+}
+
+function renderAdminList(elId, items, emptyText) {
+  const el = document.getElementById(elId);
+  if (!el) return;
+
+  if (!items.length) {
+    el.innerHTML = `<div class="admin-empty">${emptyText}</div>`;
+    return;
+  }
+
+  el.innerHTML = items.map(({ repair:r, index:i }) => {
+    const ageDays = getRepairAgeDays(r);
+    const ageText = ageDays > 0 ? `${ageDays} วัน` : 'วันนี้';
+    return `
+      <div class="admin-item" onclick="showDetail(${i})">
+        <span class="admin-dot" style="background:${statusColor(r.status)}"></span>
+        <div class="admin-item-main">
+          <div class="admin-item-title">${r.building || '(ไม่ระบุอาคาร)'}</div>
+          <div class="admin-item-meta">${r.category || '-'} · ${r.reporter_name || '-'}</div>
+        </div>
+        <div class="admin-item-age">${ageText}</div>
+      </div>`;
+  }).join('');
+}
+
+function getRepairAgeDays(r) {
+  const t = new Date(r.submitted_at).getTime();
+  if (!t) return 0;
+  return Math.max(0, Math.floor((Date.now() - t) / 86400000));
+}
+
+function isRepairToday(r) {
+  const t = new Date(r.submitted_at);
+  if (isNaN(t.getTime())) return false;
+  const now = new Date();
+  return t.getFullYear() === now.getFullYear() &&
+    t.getMonth() === now.getMonth() &&
+    t.getDate() === now.getDate();
 }
 
 function renderHistory() {
