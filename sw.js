@@ -1,4 +1,4 @@
-const CACHE = 'repair-v15';
+const CACHE = 'repair-v16';
 const FILES = [
   '/cuvet_Repair/manifest.json',
   '/cuvet_Repair/icon-192.png'
