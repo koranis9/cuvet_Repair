@@ -12,6 +12,7 @@
 <title>ระบบแจ้งซ่อม</title>
 <style>
   *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  html,body{overflow-x:hidden}
   body{font-family:'Sarabun',sans-serif;background:#B9D9F4;color:#172033;min-height:100vh;display:flex;justify-content:center;}
   :root{--primary:#1565C0;--primary-dark:#0D47A1;--primary-light:#E3F2FD;--accent:#FF8500;--success:#21C467;--danger:#F44336;--white:#fff;--gray:#7E8798;--border:#E6EDF7;--violet:#7348F2;--cyan:#1CB9BE}
 
@@ -48,21 +49,21 @@
   .login-card h2{font-size:16px;margin-bottom:16px;color:#212121}
 
   /* ── App Shell ── */
-  #appScreen{background:#F7FAFF;padding-bottom:86px;flex:1;overflow-y:auto;}
-  .topbar{background:linear-gradient(135deg,#0756B8 0%,#176ED4 46%,#7048E8 100%);color:white;padding:28px 18px 54px;display:flex;align-items:flex-start;gap:12px;position:sticky;top:0;z-index:100;width:100%;overflow:hidden}
-  .topbar:before{content:"";position:absolute;inset:-40px -30px auto auto;width:310px;height:170px;background:rgba(255,255,255,0.12);border-radius:50%;transform:rotate(-12deg)}
-  .topbar:after{content:"";position:absolute;left:-32px;right:-32px;bottom:-34px;height:78px;background:#F7FAFF;border-radius:50% 50% 0 0/100% 100% 0 0}
-  .topbar-title{font-size:28px;font-weight:700;line-height:1.18;flex:1;position:relative;z-index:1}
+  #appScreen{background:#F7FAFF;padding-bottom:78px;flex:1;overflow-y:auto;}
+  .topbar{background:linear-gradient(135deg,#0756B8 0%,#176ED4 46%,#7048E8 100%);color:white;padding:20px 16px 38px;display:flex;align-items:flex-start;gap:10px;position:sticky;top:0;z-index:100;width:100%;overflow:hidden}
+  .topbar:before{content:"";position:absolute;inset:-48px -40px auto auto;width:270px;height:140px;background:rgba(255,255,255,0.12);border-radius:50%;transform:rotate(-12deg)}
+  .topbar:after{content:"";position:absolute;left:-28px;right:-28px;bottom:-27px;height:58px;background:#F7FAFF;border-radius:50% 50% 0 0/100% 100% 0 0}
+  .topbar-title{font-size:24px;font-weight:700;line-height:1.18;flex:1;position:relative;z-index:1}
   .topbar-avatar{width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,0.25);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;cursor:pointer}
   .topbar button{position:relative;z-index:1}
-  .bottomnav{position:sticky;bottom:14px;left:0;right:0;background:white;border:1px solid rgba(230,237,247,0.9);display:flex;z-index:100;margin:0 16px 0;border-radius:18px;box-shadow:0 12px 32px rgba(37,66,118,0.16);overflow:hidden}
+  .bottomnav{position:sticky;bottom:10px;left:0;right:0;background:white;border:1px solid rgba(230,237,247,0.9);display:flex;z-index:100;margin:0 12px 0;border-radius:16px;box-shadow:0 10px 26px rgba(37,66,118,0.14);overflow:hidden}
   .bnav-item{flex:1;display:flex;flex-direction:column;align-items:center;padding:10px 0;cursor:pointer;color:#687286;font-size:11px;gap:4px;transition:color 0.2s;position:relative}
   .bnav-item.active:before{content:"";position:absolute;top:0;width:54px;height:4px;background:#2477F2;border-radius:0 0 4px 4px}
   .bnav-item.active{color:var(--primary)}
   .bnav-icon{font-size:24px}
 
   /* ── Pages ── */
-  .page{display:none;padding:18px}
+  .page{display:none;padding:14px}
   .page.active{display:block}
 
   /* ── Home ── */
@@ -70,12 +71,12 @@
   .home-greeting{font-size:14px;opacity:0.85}
   .home-name{font-size:20px;font-weight:700;margin-top:2px}
   .home-dept{font-size:12px;opacity:0.75;margin-top:2px}
-  .stat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:22px}
-  .stat-card{background:white;border-radius:18px;padding:18px 14px;text-align:left;border:1px solid rgba(230,237,247,0.96);box-shadow:0 14px 34px rgba(34,64,112,0.10);min-height:112px;display:flex;align-items:center;gap:14px;position:relative;overflow:hidden}
-  .stat-card:after{content:"";position:absolute;right:-22px;bottom:-26px;width:118px;height:58px;border-radius:50%;background:rgba(21,101,192,0.08)}
-  .stat-icon{width:58px;height:58px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:30px;flex:0 0 58px}
-  .stat-num{font-size:36px;line-height:1;font-weight:700;color:var(--primary)}
-  .stat-label{font-size:14px;color:#586174;margin-top:8px;font-weight:600}
+  .stat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:18px}
+  .stat-card{background:white;border-radius:15px;padding:12px 10px;text-align:left;border:1px solid rgba(230,237,247,0.96);box-shadow:0 10px 22px rgba(34,64,112,0.08);min-height:84px;display:flex;align-items:center;gap:10px;position:relative;overflow:hidden}
+  .stat-card:after{content:"";position:absolute;right:-26px;bottom:-30px;width:108px;height:52px;border-radius:50%;background:rgba(21,101,192,0.08)}
+  .stat-icon{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:21px;flex:0 0 42px}
+  .stat-num{font-size:26px;line-height:1;font-weight:700;color:var(--primary)}
+  .stat-label{font-size:11px;color:#586174;margin-top:5px;font-weight:600}
   .stat-card.orange{border-bottom:4px solid var(--accent)}
   .stat-card.blue{border-bottom:4px solid #2477F2}
   .stat-card.green{border-bottom:4px solid var(--success)}
@@ -88,12 +89,12 @@
   .stat-card.blue .stat-num{color:#2196F3}
   .stat-card.green .stat-num{color:#4CAF50}
   .stat-card.purple .stat-num{color:var(--violet)}
-  .quick-btns{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
-  .quick-btn{background:white;border-radius:16px;padding:16px 12px;display:flex;flex-direction:row;align-items:center;gap:12px;cursor:pointer;border:1px solid rgba(230,237,247,0.96);transition:transform 0.15s,box-shadow 0.15s;box-shadow:0 12px 28px rgba(34,64,112,0.09);min-height:76px}
+  .quick-btns{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+  .quick-btn{background:white;border-radius:15px;padding:13px 10px;display:flex;flex-direction:row;align-items:center;gap:10px;cursor:pointer;border:1px solid rgba(230,237,247,0.96);transition:transform 0.15s,box-shadow 0.15s;box-shadow:0 10px 22px rgba(34,64,112,0.08);min-height:68px}
   .quick-btn:active{transform:scale(0.99)}
-  .quick-btn-icon{width:48px;height:48px;border-radius:50%;font-size:25px;display:flex;align-items:center;justify-content:center;background:#EAF2FF;color:#2477F2;flex:0 0 48px}
-  .quick-btn-label{font-size:15px;font-weight:700;color:#172033;flex:1}
-  .quick-btn-arrow{font-size:24px;color:#687286;font-weight:700}
+  .quick-btn-icon{width:42px;height:42px;border-radius:50%;font-size:22px;display:flex;align-items:center;justify-content:center;background:#EAF2FF;color:#2477F2;flex:0 0 42px}
+  .quick-btn-label{font-size:13px;font-weight:700;color:#172033;flex:1}
+  .quick-btn-arrow{font-size:22px;color:#687286;font-weight:700}
   .quick-btn.primary-action{background:linear-gradient(135deg,#1267D6 0%,#1E80FF 55%,#7048E8 100%);color:white;box-shadow:0 14px 30px rgba(30,128,255,0.22)}
   .quick-btn.primary-action .quick-btn-icon{background:rgba(255,255,255,0.18);color:white}
   .quick-btn.primary-action .quick-btn-label{color:white}
@@ -103,7 +104,7 @@
   .quick-btn.history .quick-btn-icon{background:#F0EAFF;color:var(--violet)}
   .quick-btn.profile .quick-btn-icon{background:#EAF2FF;color:#2C6BED}
   .quick-btn.refresh .quick-btn-icon{background:#E7FAFA;color:var(--cyan)}
-  .admin-panel{display:none;margin-top:22px}
+  .admin-panel{display:none;margin-top:18px}
   .admin-panel.show{display:block}
   .admin-card{background:white;border:1px solid rgba(230,237,247,0.96);border-radius:16px;box-shadow:0 12px 28px rgba(34,64,112,0.08);padding:14px;margin-bottom:12px}
   .admin-card-title{display:flex;justify-content:space-between;align-items:center;font-size:14px;font-weight:700;color:#172033;margin-bottom:10px}
@@ -117,6 +118,9 @@
   .admin-item-meta{font-size:11px;color:#7E8798;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .admin-item-age{font-size:11px;font-weight:700;color:#FF8500;white-space:nowrap}
   .admin-empty{font-size:12px;color:#7E8798;padding:10px;background:#F8FBFF;border-radius:12px}
+  .page-heading{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}
+  .page-heading .section-title{margin:0}
+  .home-link{width:auto;border:0;background:#EAF2FF;color:#1565C0;border-radius:999px;padding:8px 12px;font-family:inherit;font-size:12px;font-weight:700;cursor:pointer}
 
   /* ── Form ── */
   .form-group{margin-bottom:14px}
@@ -183,14 +187,14 @@
   @keyframes spin{to{transform:rotate(360deg)}}
   .empty-state{text-align:center;padding:48px 16px;color:var(--gray)}
   .empty-icon{font-size:48px;margin-bottom:12px}
-  .section-title{font-size:19px;font-weight:700;color:#172033;margin:18px 0 14px;padding-left:12px;border-left:4px solid #2477F2;line-height:1.2}
+  .section-title{font-size:17px;font-weight:700;color:#172033;margin:16px 0 12px;padding-left:10px;border-left:4px solid #2477F2;line-height:1.2}
   @media (max-width:420px){
     .topbar-title{font-size:24px}
     .stat-grid,.quick-btns{gap:10px}
-    .stat-card{padding:14px 10px;gap:10px;min-height:98px}
-    .stat-icon{width:48px;height:48px;font-size:24px;flex-basis:48px}
-    .stat-num{font-size:30px}
-    .stat-label{font-size:12px}
+    .stat-card{padding:12px 9px;gap:9px;min-height:86px}
+    .stat-icon{width:42px;height:42px;font-size:21px;flex-basis:42px}
+    .stat-num{font-size:26px}
+    .stat-label{font-size:11px}
     .quick-btn{padding:13px 10px;min-height:68px}
     .quick-btn-icon{width:42px;height:42px;font-size:22px;flex-basis:42px}
     .quick-btn-label{font-size:13px}
@@ -338,7 +342,10 @@
 
   <!-- Report -->
   <div id="pageReport" class="page">
-    <div class="section-title">แจ้งซ่อม</div>
+    <div class="page-heading">
+      <div class="section-title">แจ้งซ่อม</div>
+      <button class="home-link" onclick="goPage('home')">🏠 หน้าหลัก</button>
+    </div>
     <div class="form-section">
       <div class="form-section-title">ข้อมูลผู้แจ้ง</div>
       <div class="form-group"><label class="form-label">ชื่อผู้แจ้ง <span class="req">*</span></label>
